@@ -34,7 +34,6 @@ public class TestEngine {
 	private TestResultGenerator testResultGenerator = new TestResultGenerator();
 
 	public TestEngine(String modulePackage) {
-		System.out.println("test");
 		this.modulePackage = modulePackage;
 		PropertiesBuilder.buildConfig();
 	}
