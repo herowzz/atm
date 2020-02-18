@@ -7,6 +7,9 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.herowzz.atm.annotation.TestModule;
 import com.github.herowzz.atm.annotation.UseCase;
 import com.github.herowzz.atm.exception.TestException;
@@ -16,6 +19,8 @@ import com.github.herowzz.atm.exception.TestException;
  * @author wangzz
  */
 public class RunModule {
+
+	private static Logger log = LoggerFactory.getLogger(RunModule.class);
 
 	/**
 	 * 名称
@@ -30,7 +35,7 @@ public class RunModule {
 	/**
 	 * 执行对象
 	 */
-	private Class<?> classz;
+	private Object instantObj;
 
 	/**
 	 * 前置方法
@@ -55,11 +60,11 @@ public class RunModule {
 	public RunModule() {
 	}
 
-	public RunModule(Class<?> classz) {
-		TestModule testModule = classz.getAnnotation(TestModule.class);
+	public RunModule(Object instantObj) throws Exception {
+		TestModule testModule = instantObj.getClass().getAnnotation(TestModule.class);
 		this.name = testModule.name();
 		this.order = testModule.order();
-		this.classz = classz;
+		this.instantObj = instantObj;
 	}
 
 	public void addRunMethod(Method method) {
@@ -91,7 +96,7 @@ public class RunModule {
 	 */
 	public void executeBeforeMethod() throws Exception {
 		if (this.beforeMethod != null) {
-			this.beforeMethod.invoke(this.classz.newInstance(), new Object[] {});
+			this.beforeMethod.invoke(instantObj, new Object[] {});
 		}
 	}
 
@@ -103,23 +108,32 @@ public class RunModule {
 		List<CaseResult> resultList = new ArrayList<>();
 		for (Method runMethod : runMethodList) {
 			CaseResult caseResult = new CaseResult();
+			UseCase useCase = runMethod.getAnnotation(UseCase.class);
+			caseResult.setModuleName(this.name);
+			caseResult.setModuleOrder(this.order);
+			caseResult.setCaseName(useCase.name());
+			caseResult.setCaseOrder(useCase.order());
 			try {
-				Object invokeRes = runMethod.invoke(this.classz.newInstance(), new Object[] {});
-				if (invokeRes != null)
-					caseResult = (CaseResult) invokeRes;
+				log.info(caseResult.getFullName() + " 开始测试.");
+				Object invokeRes = runMethod.invoke(instantObj, new Object[] {});
+				if (invokeRes != null) {
+					caseResult = caseResult.copy((CaseResult) invokeRes);
+					if (caseResult.isResult() == true) {
+						log.info(caseResult.getFullName() + " 测试结果: 成功!");
+					} else {
+						log.warn(caseResult.getFullName() + " 测试结果: 失败!\n" + caseResult.getErrorInfo());
+					}
+				}
 			} catch (InvocationTargetException e) {
 				Throwable targetException = e.getTargetException();
 				caseResult = caseResult.error(targetException);
+				log.error(caseResult.getFullName() + " 测试结果失败, 主流程中断!\n" + caseResult.getErrorInfo());
 			} catch (TestException e) {
 				caseResult = caseResult.error(e);
+				log.error(caseResult.getFullName() + " 测试结果失败, 主流程中断!\n" + caseResult.getErrorInfo());
 			} catch (Exception e) {
 				throw e;
 			}
-			caseResult.setModuleName(this.name);
-			caseResult.setModuleOrder(this.order);
-			UseCase useCase = runMethod.getAnnotation(UseCase.class);
-			caseResult.setCaseName(useCase.name());
-			caseResult.setCaseOrder(useCase.order());
 			resultList.add(caseResult);
 			if (caseResult.isSuspend()) {
 				this.suspend = caseResult.isSuspend();
@@ -135,7 +149,7 @@ public class RunModule {
 	 */
 	public void executeEndMethod() throws Exception {
 		if (this.endMethod != null) {
-			this.endMethod.invoke(this.classz.newInstance(), new Object[] {});
+			this.endMethod.invoke(instantObj, new Object[] {});
 		}
 	}
 
@@ -169,14 +183,6 @@ public class RunModule {
 
 	public void setOrder(int order) {
 		this.order = order;
-	}
-
-	public Class<?> getClassz() {
-		return classz;
-	}
-
-	public void setClassz(Class<?> classz) {
-		this.classz = classz;
 	}
 
 	@Override

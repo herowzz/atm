@@ -66,6 +66,17 @@ public class CaseResult {
 		return this;
 	}
 
+	public CaseResult copy(CaseResult caseResult) {
+		this.result = caseResult.isResult();
+		this.errorInfo = caseResult.getErrorInfo();
+		this.suspend = caseResult.isSuspend();
+		return this;
+	}
+
+	public String getFullName() {
+		return this.moduleOrder + "." + this.caseOrder + "-" + this.caseName;
+	}
+
 	public String getModuleName() {
 		return moduleName;
 	}
