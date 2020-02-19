@@ -5,7 +5,7 @@
 
 	<groupId>com.github.herowzz</groupId>
 	<artifactId>atm</artifactId>
-	<version>0.1.0-release</version>
+	<version>0.1.1.RELEASE</version>
 	<packaging>jar</packaging>
 
 	<name>atm</name>
@@ -40,6 +40,12 @@
 					<artifactId>selenium-safari-driver</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>io.appium</groupId>
+			<artifactId>java-client</artifactId>
+			<version>7.3.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
