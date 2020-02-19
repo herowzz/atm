@@ -10,7 +10,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
  * Chrome驱动
  * @author wangzz
  */
-public class WebChromeDriver implements ITestDriver {
+public class WebChromeDriver implements ITestDriver<WebDriver> {
 
 	private WebDriver driver;
 
@@ -24,8 +24,8 @@ public class WebChromeDriver implements ITestDriver {
 	}
 
 	@Override
-	public void run(String url) {
-		driver.get(url);
+	public void run(String runPath) {
+		driver.get(runPath);
 	}
 
 	@Override

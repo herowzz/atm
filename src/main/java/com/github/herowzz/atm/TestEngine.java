@@ -37,16 +37,26 @@ public class TestEngine {
 	private List<RunModule> moduleList = new LinkedList<>();
 
 	private TestResultGenerator testResultGenerator = new TestResultGenerator();
-	private ITestDriver driver;
+	private ITestDriver<?> driver;
 
+	/**
+	 * 构造函数
+	 * @param modulePackage 用例所属包
+	 * @param driverType    驱动类型
+	 */
 	public TestEngine(String modulePackage, DriverType driverType) {
 		this.modulePackage = modulePackage;
 		this.driver = DriverFactory.getDriver(driverType);
 		PropertiesBuilder.buildConfig();
 	}
 
+	/**
+	 * 启动引擎<br>
+	 * 通过加载的用例包,执行用例
+	 * @throws Exception
+	 */
 	public void start() throws Exception {
-		driver.run(Config.Url);
+		driver.run(Config.RunPath);
 
 		loadModule();
 

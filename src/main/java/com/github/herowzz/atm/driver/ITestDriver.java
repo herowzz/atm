@@ -6,13 +6,13 @@ import org.openqa.selenium.WebDriver;
  * 测试驱动
  * @author wangzz
  */
-public interface ITestDriver {
+public interface ITestDriver<T extends WebDriver> {
 
 	/**
 	 * 启动
-	 * @param url 地址
+	 * @param runPath 启动路径
 	 */
-	void run(String url);
+	void run(String runPath) throws Exception;
 
 	/**
 	 * 关闭
@@ -23,5 +23,5 @@ public interface ITestDriver {
 	 * 获取驱动
 	 * @return WebDriver及其子类驱动
 	 */
-	WebDriver getDriver();
+	T getDriver();
 }

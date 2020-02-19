@@ -13,9 +13,14 @@ public abstract class Config {
 	public static String Version = "";
 
 	/**
-	 * 项目访问路径
+	 * 项目启动路径
 	 */
-	public static String Url = "";
+	public static String RunPath = "";
+
+	/**
+	 * 驱动路径
+	 */
+	public static String DriverUrl = "";
 
 	/**
 	 * 结果输出目录
@@ -23,7 +28,7 @@ public abstract class Config {
 	public static String OutputPath = "";
 
 	public static String show() {
-		return "Config [Product=" + Product + ", Version=" + Version + ", Url=" + Url + ", OutputPath=" + OutputPath + "]";
+		return "Config [Product=" + Product + ", Version=" + Version + ", RunPath=" + RunPath + ", OutputPath=" + OutputPath + ", DriverUrl=" + DriverUrl + "]";
 	}
 
 }
