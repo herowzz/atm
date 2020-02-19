@@ -34,6 +34,9 @@ public class TestResultGenerator {
 		init();
 	}
 
+	/**
+	 * 初始化
+	 */
 	private void init() {
 		try {
 			cfg.setClassForTemplateLoading(this.getClass(), "/template/");
@@ -47,6 +50,11 @@ public class TestResultGenerator {
 		}
 	}
 
+	/**
+	 * 输出执行结果
+	 * @param outputPath 输出路径
+	 * @param resultList 执行结果列表
+	 */
 	public void export(String outputPath, List<CaseResult> resultList) {
 		try {
 			logger.info("开始输出测试结果...");
