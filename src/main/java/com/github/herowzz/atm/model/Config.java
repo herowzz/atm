@@ -27,6 +27,11 @@ public abstract class Config {
 	 */
 	public static String OutputPath = "";
 
+	/**
+	 * 执行测试时生成的编号
+	 */
+	public static String CaseCode = "";
+
 	public static String show() {
 		return "Config [Product=" + Product + ", Version=" + Version + ", RunPath=" + RunPath + ", OutputPath=" + OutputPath + ", DriverUrl=" + DriverUrl + "]";
 	}
