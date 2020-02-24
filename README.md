@@ -1,5 +1,5 @@
 # atm
-![](https://jitpack.io/v/herowzz/atm.svg) ![](https://img.shields.io/badge/java-1.8.0%2B-green)
+![jitpack](https://jitpack.io/v/herowzz/atm.svg) ![java](https://img.shields.io/badge/java-1.8.0%2B-green)
 
 automation test management
 
