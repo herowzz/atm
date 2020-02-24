@@ -6,9 +6,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.github.herowzz.atm.annotation.DriverInject;
 import com.github.herowzz.atm.annotation.ModuleBefore;
 import com.github.herowzz.atm.annotation.ModuleEnd;
@@ -16,12 +13,14 @@ import com.github.herowzz.atm.annotation.TestModule;
 import com.github.herowzz.atm.annotation.UseCase;
 import com.github.herowzz.atm.driver.DriverFactory;
 import com.github.herowzz.atm.driver.ITestDriver;
+import com.github.herowzz.atm.event.DriverEvent;
+import com.github.herowzz.atm.event.RunCaseListener;
 import com.github.herowzz.atm.generator.PropertiesBuilder;
 import com.github.herowzz.atm.generator.TestResultGenerator;
-import com.github.herowzz.atm.model.CaseResult;
 import com.github.herowzz.atm.model.Config;
 import com.github.herowzz.atm.model.DriverType;
 import com.github.herowzz.atm.model.RunModule;
+import com.github.herowzz.atm.model.RunTest;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
 
@@ -31,10 +30,8 @@ import com.google.common.reflect.ClassPath;
  */
 public class TestEngine {
 
-	private static Logger log = LoggerFactory.getLogger(TestEngine.class);
-
 	private String modulePackage;
-	private List<RunModule> moduleList = new LinkedList<>();
+	private RunTest runTest;
 
 	private TestResultGenerator testResultGenerator = new TestResultGenerator();
 	private ITestDriver<?> driver;
@@ -44,10 +41,15 @@ public class TestEngine {
 	 * @param modulePackage 用例所属包
 	 * @param driverType    驱动类型
 	 */
-	public TestEngine(String modulePackage, DriverType driverType) {
+	public TestEngine(String modulePackage, DriverType driverType) throws Exception {
 		this.modulePackage = modulePackage;
 		this.driver = DriverFactory.getDriver(driverType);
 		PropertiesBuilder.buildConfig();
+
+		List<RunModule> moduleList = loadModule();
+		this.runTest = new RunTest(moduleList);
+
+		DriverEvent.register(new RunCaseListener(driver));
 	}
 
 	/**
@@ -58,10 +60,9 @@ public class TestEngine {
 	public void start() throws Exception {
 		driver.run(Config.RunPath);
 
-		loadModule();
+		runCase();
 
-		List<CaseResult> resultList = runCase();
-		buildView(resultList);
+		buildResult();
 
 		driver.close();
 	}
@@ -70,7 +71,8 @@ public class TestEngine {
 	 * 装载模块
 	 * @throws Exception
 	 */
-	private List<Class<?>> loadModule() throws Exception {
+	private List<RunModule> loadModule() throws Exception {
+		List<RunModule> moduleList = new LinkedList<>();
 		List<Class<?>> moduleClassList = new LinkedList<>();
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		ImmutableSet<ClassPath.ClassInfo> topLevelClasses = ClassPath.from(classLoader).getTopLevelClassesRecursive(modulePackage);
@@ -107,35 +109,29 @@ public class TestEngine {
 			module.sortRunMethod();
 			moduleList.add(module);
 		}
-		return moduleClassList;
+		return moduleList;
 	}
 
 	/**
 	 * 执行用例
-	 * @return 执行结果列表
 	 */
-	private List<CaseResult> runCase() {
-		List<CaseResult> resultList = new LinkedList<>();
-		try {
-			for (RunModule module : moduleList) {
-				log.info("开始执行模块:" + module);
-				List<CaseResult> caseList = module.executeMethods();
-				resultList.addAll(caseList);
-				if (module.isSuspend())
-					break;
-			}
-		} catch (Exception e) {
-			log.error("execute case Methods error!", e);
-		}
-		return resultList;
+	public void runCase() {
+		this.runTest.runCase();
 	}
 
 	/**
 	 * 渲染结果页面
 	 * @param resultList 传入结果List
 	 */
-	private void buildView(List<CaseResult> resultList) {
-		testResultGenerator.export(Config.OutputPath, resultList);
+	private void buildResult() {
+		testResultGenerator.export(runTest);
+	}
+
+	/**
+	 * 获取本次测试执行
+	 */
+	public RunTest getRunTest() {
+		return runTest;
 	}
 
 }

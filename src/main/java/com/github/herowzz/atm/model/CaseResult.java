@@ -1,10 +1,12 @@
 package com.github.herowzz.atm.model;
 
+import com.github.herowzz.atm.event.IEventObject;
+
 /**
  * 用例执行结果
  * @author wangzz
  */
-public class CaseResult {
+public class CaseResult implements IEventObject {
 
 	/**
 	 * 模块名称
@@ -29,7 +31,7 @@ public class CaseResult {
 	/**
 	 * 执行结果
 	 */
-	private boolean result;
+	private boolean success;
 
 	/**
 	 * 错误信息
@@ -37,37 +39,42 @@ public class CaseResult {
 	private String errorInfo;
 
 	/**
+	 * 错误截图
+	 */
+	private String errorPic;
+
+	/**
 	 * 是否中断
 	 */
 	private boolean suspend = false;
 
 	public CaseResult ok() {
-		this.result = true;
+		this.success = true;
 		return this;
 	}
 
 	public CaseResult error(String errorInfo) {
-		this.result = false;
+		this.success = false;
 		this.errorInfo = errorInfo;
 		return this;
 	}
 
 	public CaseResult error(Exception exception) {
-		this.result = false;
+		this.success = false;
 		this.errorInfo = exception.getMessage();
 		this.suspend = true;
 		return this;
 	}
 
 	public CaseResult error(Throwable throwable) {
-		this.result = false;
+		this.success = false;
 		this.errorInfo = throwable.getMessage();
 		this.suspend = true;
 		return this;
 	}
 
 	public CaseResult copy(CaseResult caseResult) {
-		this.result = caseResult.isResult();
+		this.success = caseResult.isSuccess();
 		this.errorInfo = caseResult.getErrorInfo();
 		this.suspend = caseResult.isSuspend();
 		return this;
@@ -75,6 +82,10 @@ public class CaseResult {
 
 	public String getFullName() {
 		return this.moduleOrder + "." + this.caseOrder + "-" + this.caseName;
+	}
+
+	public String getFullNameBar() {
+		return this.moduleOrder + "-" + this.caseOrder + "-" + this.caseName;
 	}
 
 	public String getModuleName() {
@@ -117,20 +128,28 @@ public class CaseResult {
 		this.caseOrder = caseOrder;
 	}
 
-	public boolean isResult() {
-		return result;
-	}
-
-	public void setResult(boolean result) {
-		this.result = result;
-	}
-
 	public boolean isSuspend() {
 		return suspend;
 	}
 
 	public void setSuspend(boolean suspend) {
 		this.suspend = suspend;
+	}
+
+	public String getErrorPic() {
+		return errorPic;
+	}
+
+	public void setErrorPic(String errorPic) {
+		this.errorPic = errorPic;
+	}
+
+	public boolean isSuccess() {
+		return success;
+	}
+
+	public void setSuccess(boolean success) {
+		this.success = success;
 	}
 
 }

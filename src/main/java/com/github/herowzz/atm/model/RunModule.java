@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.github.herowzz.atm.annotation.TestModule;
 import com.github.herowzz.atm.annotation.UseCase;
+import com.github.herowzz.atm.event.DriverEvent;
 import com.github.herowzz.atm.exception.TestException;
 
 /**
@@ -118,21 +119,16 @@ public class RunModule {
 				Object invokeRes = runMethod.invoke(instantObj, new Object[] {});
 				if (invokeRes != null) {
 					caseResult = caseResult.copy((CaseResult) invokeRes);
-					if (caseResult.isResult() == true) {
-						log.info(caseResult.getFullName() + " 测试结果: 成功!");
-					} else {
-						log.warn(caseResult.getFullName() + " 测试结果: 失败!\n" + caseResult.getErrorInfo());
-					}
 				}
 			} catch (InvocationTargetException e) {
 				Throwable targetException = e.getTargetException();
 				caseResult = caseResult.error(targetException);
-				log.error(caseResult.getFullName() + " 测试结果失败, 主流程中断!\n" + caseResult.getErrorInfo());
 			} catch (TestException e) {
 				caseResult = caseResult.error(e);
-				log.error(caseResult.getFullName() + " 测试结果失败, 主流程中断!\n" + caseResult.getErrorInfo());
 			} catch (Exception e) {
 				throw e;
+			} finally {
+				DriverEvent.post(caseResult);
 			}
 			resultList.add(caseResult);
 			if (caseResult.isSuspend()) {
@@ -185,11 +181,6 @@ public class RunModule {
 		this.order = order;
 	}
 
-	@Override
-	public String toString() {
-		return order + "." + name;
-	}
-
 	public List<Method> getRunMethodList() {
 		return runMethodList;
 	}
@@ -204,6 +195,11 @@ public class RunModule {
 
 	public void setSuspend(boolean suspend) {
 		this.suspend = suspend;
+	}
+
+	@Override
+	public String toString() {
+		return order + "." + name;
 	}
 
 }

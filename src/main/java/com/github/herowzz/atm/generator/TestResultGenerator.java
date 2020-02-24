@@ -5,15 +5,13 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.herowzz.atm.model.CaseResult;
 import com.github.herowzz.atm.model.Config;
-import com.github.herowzz.atm.util.DateUtils;
+import com.github.herowzz.atm.model.RunTest;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -52,15 +50,13 @@ public class TestResultGenerator {
 
 	/**
 	 * 输出执行结果
-	 * @param outputPath 输出路径
-	 * @param resultList 执行结果列表
 	 */
-	public void export(String outputPath, List<CaseResult> resultList) {
+	public void export(RunTest runTest) {
 		try {
 			logger.info("开始输出测试结果...");
-			outputPath = outputPath + "\\" + Config.Product + "-测试结果-" + DateUtils.getNowDateTimeStr() + ".html";
+			String outputPath = Config.OutputPath + "\\" + Config.Product + "-测试结果-" + runTest.getName() + ".html";
 			Map<String, Object> root = new HashMap<>();
-			root.put("rsList", resultList);
+			root.put("rsList", runTest.getResultList());
 			try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputPath), "UTF-8"))) {
 				tempHtml.process(root, out);
 				out.flush();
