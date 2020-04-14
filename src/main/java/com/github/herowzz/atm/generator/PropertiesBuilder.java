@@ -21,7 +21,7 @@ public class PropertiesBuilder {
 	 */
 	public static void buildConfig() {
 		Properties properties = new Properties();
-		InputStream inputStream = Object.class.getResourceAsStream("/config.properties");
+		InputStream inputStream = PropertiesBuilder.class.getResourceAsStream("/config.properties");
 		try {
 			properties.load(inputStream);
 			Config.Product = properties.get("product").toString();
