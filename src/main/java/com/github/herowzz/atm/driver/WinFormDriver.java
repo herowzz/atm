@@ -24,10 +24,14 @@ public class WinFormDriver implements ITestDriver<WindowsDriver<WindowsElement>>
 	}
 
 	@Override
-	public void run(String runPath) throws Exception {
+	public void run(String runPath) throws Exception{
 		appCapabilities.setCapability("app", runPath);
 		appCapabilities.setCapability("deviceName", "Windows");
-		driver = new WindowsDriver<WindowsElement>(new URL(Config.DriverUrl), appCapabilities);
+		try {
+			driver = new WindowsDriver<WindowsElement>(new URL(Config.DriverUrl), appCapabilities);
+		}catch (Exception e) {
+			driver = new WindowsDriver<WindowsElement>(new URL(Config.DriverUrl), appCapabilities);
+		}
 		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 	}
 
