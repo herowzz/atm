@@ -29,7 +29,7 @@ public class PropertiesBuilder {
 			Config.DriverUrl = properties.get("driverUrl").toString();
 			Config.Version = properties.get("version").toString();
 			Config.OutputPath = properties.get("outputPath").toString();
-			logger.error("加载配置:" + Config.show());
+			logger.info("加载配置:" + Config.show());
 		} catch (Exception e) {
 			logger.error("加载config.properties异常!", e);
 			System.exit(1);
