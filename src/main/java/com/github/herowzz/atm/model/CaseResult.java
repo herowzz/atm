@@ -1,5 +1,7 @@
 package com.github.herowzz.atm.model;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import com.github.herowzz.atm.event.IEventObject;
 
 /**
@@ -68,7 +70,7 @@ public class CaseResult implements IEventObject {
 
 	public CaseResult error(Throwable throwable) {
 		this.success = false;
-		this.errorInfo = throwable.getMessage();
+		this.errorInfo = ExceptionUtils.getStackTrace(throwable);
 		this.suspend = true;
 		return this;
 	}

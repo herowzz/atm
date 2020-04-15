@@ -121,7 +121,7 @@ public class RunModule {
 					caseResult = caseResult.copy((CaseResult) invokeRes);
 				}
 			} catch (InvocationTargetException e) {
-				Throwable targetException = e.getTargetException();
+				Throwable targetException = e.getCause();
 				caseResult = caseResult.error(targetException);
 			} catch (TestException e) {
 				caseResult = caseResult.error(e);

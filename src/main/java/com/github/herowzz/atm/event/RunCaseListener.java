@@ -33,8 +33,7 @@ public class RunCaseListener implements IDriverListener<CaseResult> {
 				if (caseResult.isSuspend())
 					error += " - 主流程中断!";
 				error += "\n" + caseResult.getErrorInfo();
-				log.warn(error);
-
+				log.error(error);
 				DriverUtils.screenshot(driver.getDriver(), caseResult);
 			}
 		}
