@@ -31,7 +31,7 @@ public class PropertiesBuilder {
 			Config.OutputPath = properties.get("outputPath").toString();
 			Config.Exclude = properties.get("exclude") != null ? properties.get("exclude").toString() : "";
 			Config.Include = properties.get("include") != null ? properties.get("include").toString() : "";
-			logger.error("加载配置:" + Config.show());
+			logger.info("加载配置:" + Config.show());
 		} catch (Exception e) {
 			logger.error("加载config.properties异常!", e);
 			System.exit(1);
