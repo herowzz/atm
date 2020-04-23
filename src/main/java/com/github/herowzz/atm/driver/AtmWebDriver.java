@@ -35,9 +35,23 @@ public class AtmWebDriver extends ChromeDriver {
 			return false;
 		}
 	}
+	
+	/**
+	  * 根据文本判断一个元素是否存在
+	 */
+	public boolean isElementExistByText(String text) {
+		try {
+			this.findElement(By.xpath("//*[contains(text(), '" + text + "')]"));
+			return true;
+		} catch (NoSuchElementException e) {
+			return false;
+		}
+	}
 
 	/**
-	 * 判断一个元素是否存在
+	  *  判断一个元素是否存在
+	 * @param by 查询元素条件
+	 * @return
 	 */
 	public boolean isElementExist(By by) {
 		try {
@@ -49,7 +63,10 @@ public class AtmWebDriver extends ChromeDriver {
 	}
 
 	/**
-	 * 判断一个元素下的一个元素是否存在
+	   *  判断指定元素下是否存在某一元素
+	 * @param parent 父级元素
+	 * @param by 子元素查询条件
+	 * @return
 	 */
 	public boolean isElementExist(WebElement parent, By by) {
 		try {
@@ -61,26 +78,25 @@ public class AtmWebDriver extends ChromeDriver {
 	}
 
 	/**
-	 * 判断一个元素是否存在，根据自定义属性
+	  *   根据自定义属性，判断一个元素是否存在
+	 * @param attrName 属性名
+	 * @param attrValue 属性值
+	 * @return
 	 */
-	public boolean isElementExist(String attr, String value) {
+	public boolean isElementExist(String attrName, String attrValue) {
 		try {
-			findByOne(attr, value);
+			findByAttributeToOne(attrName, attrValue);
 			return true;
 		} catch (NoSuchElementException e) {
 			return false;
 		}
 	}
-
-	/**
-	 * 判断一组元素是否存在
-	 */
-	public boolean elementsExists(By by) {
-		return (this.findElements(by).size() > 0) ? true : false;
-	}
 	
 	/**
-	 * 判断一个元素下的一个元素是否存在，根据Xpath
+	  *   判断一个元素下的一个元素是否存在，根据Xpath
+	 * @param parent 父级查询条件
+	 * @param by 子元素查询条件
+	 * @return
 	 */
 	public boolean isElementExist(By parent, By by) {
 		try {
@@ -99,8 +115,7 @@ public class AtmWebDriver extends ChromeDriver {
 	 * @param text    期望出现的文本
 	 * @param seconds 超时时间
 	 * @return Boolean 检查给定文本是否存在于指定元素中, 超时则捕获抛出异常TimeoutException并返回false
-	 * @see org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElement(WebElement
-	 *      element, String text)
+	 * @see org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElement(WebElement element, String text)
 	 */
 	public Boolean waitUntilPageContainText(String text, long seconds) {
 		try {
@@ -114,12 +129,10 @@ public class AtmWebDriver extends ChromeDriver {
 
 	/**
 	 * 1、指定时间内等待直到元素存在于页面的DOM上并可见, 可见性意味着该元素不仅被显示, 而且具有大于0的高度和宽度
-	 * 
 	 * @param locator 元素定位器
 	 * @param seconds 超时时间
 	 * @return Boolean 检查给定元素的定位器是否出现, 超时则捕获抛出异常TimeoutException并返回false
-	 * @see org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated(By
-	 *      locator)
+	 * @see org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated(By locator)
 	 */
 	public Boolean waitUntilElementVisible(By locator, int seconds) {
 		try {
@@ -131,12 +144,23 @@ public class AtmWebDriver extends ChromeDriver {
 		}
 	}
 
-
-	public WebElement findByOne(String attr, String value) {
-		return this.findElement(By.xpath("//*[@" + attr + "='" + value + "']"));
+    /**
+          *   根据属性找到单个元素
+     * @param attrName 属性名称
+     * @param attrValue 属性值
+     * @return
+     */
+	public WebElement findByAttributeToOne(String attrName, String attrValue) {
+		return this.findElement(By.xpath("//*[@" + attrName + "='" + attrValue + "']"));
 	}
 
-	public List<WebElement> findByMany(String attr, String value) {
-		return this.findElements(By.xpath("//*[@" + attr + "='" + value + "']"));
+	/**
+	  *   根据属性找到多个元素
+	 * @param attrName  属性名称
+	 * @param attrValue 属性值
+	 * @return
+	 */
+	public List<WebElement> findByAttributeToMany(String attrName, String attrValue) {
+		return this.findElements(By.xpath("//*[@" + attrName + "='" + attrValue + "']"));
 	}
 }

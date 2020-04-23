@@ -29,6 +29,8 @@ public class PropertiesBuilder {
 			Config.DriverUrl = properties.get("driverUrl").toString();
 			Config.Version = properties.get("version").toString();
 			Config.OutputPath = properties.get("outputPath").toString();
+			Config.Exclude = properties.get("exclude") != null ? properties.get("exclude").toString() : "";
+			Config.Include = properties.get("include") != null ? properties.get("include").toString() : "";
 			logger.error("加载配置:" + Config.show());
 		} catch (Exception e) {
 			logger.error("加载config.properties异常!", e);

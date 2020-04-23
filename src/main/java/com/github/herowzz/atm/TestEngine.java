@@ -15,6 +15,7 @@ import com.github.herowzz.atm.driver.DriverFactory;
 import com.github.herowzz.atm.driver.ITestDriver;
 import com.github.herowzz.atm.event.DriverEvent;
 import com.github.herowzz.atm.event.RunCaseListener;
+import com.github.herowzz.atm.filter.FilterCase;
 import com.github.herowzz.atm.generator.PropertiesBuilder;
 import com.github.herowzz.atm.generator.TestResultGenerator;
 import com.github.herowzz.atm.model.Config;
@@ -45,10 +46,9 @@ public class TestEngine {
 		this.modulePackage = modulePackage;
 		this.driver = DriverFactory.getDriver(driverType);
 		PropertiesBuilder.buildConfig();
-
 		List<RunModule> moduleList = loadModule();
-		this.runTest = new RunTest(moduleList);
-
+		List<RunModule> runModuleList = FilterCase.filter(moduleList);
+		this.runTest = new RunTest(runModuleList);
 		DriverEvent.register(new RunCaseListener(driver));
 	}
 
@@ -106,6 +106,7 @@ public class TestEngine {
 					module.addRunMethod(method);
 				}
 			}
+			moduleClass.getAnnotation(TestModule.class).order();
 			module.sortRunMethod();
 			moduleList.add(module);
 		}
@@ -133,5 +134,5 @@ public class TestEngine {
 	public RunTest getRunTest() {
 		return runTest;
 	}
-
+	
 }

@@ -32,8 +32,19 @@ public abstract class Config {
 	 */
 	public static String CaseCode = "";
 
+	/**
+	 * 排除的case
+	 */
+	public static String Exclude = "";
+
+	/**
+	 * 执行的case
+	 */
+	public static String Include = "";
+
 	public static String show() {
-		return "Config [Product=" + Product + ", Version=" + Version + ", RunPath=" + RunPath + ", OutputPath=" + OutputPath + ", DriverUrl=" + DriverUrl + "]";
+		return "Config [Product=" + Product + ", Version=" + Version + ", RunPath=" + RunPath + ", OutputPath="
+				+ OutputPath + ", DriverUrl=" + DriverUrl + ", Exclude=" + Exclude + ", Include=" + Include + "]";
 	}
 
 }
