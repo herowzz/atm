@@ -3,6 +3,7 @@ package com.github.herowzz.atm.filter;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.herowzz.atm.exception.TestException;
+import com.github.herowzz.atm.model.refrence.FilterTypeEnum;
 
 /**
  *  配置验证
@@ -26,19 +27,19 @@ public class FliterVerify {
 		if(StringUtils.isNotBlank(config)) {
 			String[] includeArray = config.split(",");
 			for (String item : includeArray) {
-				int type = FilterResolver.checkType(item);
-				if(type == 0) {//单个模块，模块下需指定Case
+				FilterTypeEnum type = FilterResolver.checkType(item);
+				if(type == FilterTypeEnum.NotScopeChild) {//单个模块，模块下需指定Case
 					bracketNumVerify(item);//左括号和右括号是否都只存在一个
 					bracketLocationVerify(item);//左右括号位置是否正确
 					bracketExternalNumVerify(item);//括号外是否存在数字以外的字符
 					getChlidList(FilterResolver.getBracketContent(item));//验证子节点
-				}else if(type == 1){//范围
+				}else if(type == FilterTypeEnum.Scope){//范围
 					twoOrMoreLine(item);//是否只有一个“-”
 					lineBothEndsNumber(item);//“-”两边是否都存在数字，并且不存在特殊字符
 					fristNumLessThanSecondNum(item);//第一个是数字是否小于第二个
-				}else if(type == 2){//非范围
+				}else if(type == FilterTypeEnum.NotScope){//非范围
 					existNotNumber(item);//判断是否存在数字以外的字符
-				}else if(type == 4){
+				}else if(type == null){
 					throw new TestException("配置文件错误：类型错误");
 				}
 			}
@@ -53,12 +54,15 @@ public class FliterVerify {
 	private static boolean getChlidList(String str){
 		String[] array = str.split(",");
 		for (String item : array) {
-			if(FilterResolver.checkType(item) == 1) {//范围
+			FilterTypeEnum type = FilterResolver.checkType(item);
+			if(type == FilterTypeEnum.Scope) {//范围
 				twoOrMoreLine(item);//是否只有一个“-”
 				lineBothEndsNumber(item);//“-”两边是否都存在数字，并且不存在特殊字符
 				fristNumLessThanSecondNum(item);//第一个是数字是否小于第二个
-			}else if(FilterResolver.checkType(item) == 2) {//非范围
+			}else if(type == FilterTypeEnum.NotScope) {//非范围
 				existNotNumber(item);//判断是否存在数字以外的字符
+			}else if(type == null){
+				throw new TestException("配置文件错误：类型错误");
 			}
 		}
 		return true;

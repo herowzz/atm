@@ -1,5 +1,6 @@
 package com.github.herowzz.atm.filter;
 
+import com.github.herowzz.atm.model.refrence.FilterTypeEnum;
 
 /**
  *  配置解析
@@ -29,16 +30,16 @@ public class FilterResolver {
 	 * @param item 配置项
 	 * @return
 	 */
-	public static int checkType(String item) {
+	public static FilterTypeEnum checkType(String item) {
 		if(item.indexOf("(") > 0 && item.indexOf(")") > 0 && item.indexOf("(") < item.indexOf(")")) {//单个模块，模块下需指定Case
-			return 0;
+			return FilterTypeEnum.NotScopeChild;
 		}
 		if(item.indexOf("-") > 0 && item.indexOf("(") < 0 && item.indexOf(")") < 0) {//范围，并且不存在括号
-			return 1;
+			return FilterTypeEnum.Scope;
 		}
 		if(item.indexOf("-") < 0 && item.indexOf("(") < 0 && item.indexOf(")") < 0) {//非范围，并且不存在括号
-			return 2;
+			return FilterTypeEnum.NotScope;
 		}
-		return 4;
+		return null;
 	}
 }
